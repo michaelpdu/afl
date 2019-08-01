@@ -2350,6 +2350,7 @@ static void init_forkserver(char** argv) {
   if (pipe(st_pipe) || pipe(ctl_pipe)) PFATAL("pipe() failed");
 
   forksrv_pid = fork();
+  printf("forksrv_pid = %d\n", forksrv_pid);
 
   if (forksrv_pid < 0) PFATAL("fork() failed");
 
@@ -2649,7 +2650,7 @@ static u8 run_target(char** argv) {
      init_forkserver(), but c'est la vie. */
 
   if (dumb_mode == 1 || no_forkserver) {
-
+    printf("Run target in dumb mode or no fork server mode.");
     child_pid = fork();
 
     if (child_pid < 0) PFATAL("fork() failed");
@@ -2712,7 +2713,6 @@ static u8 run_target(char** argv) {
 
       setenv("MSAN_OPTIONS", "exit_code=" STRINGIFY(MSAN_ERROR) ":"
                              "msan_track_origins=0", 0);
-
       execv(target_path, argv);
 
       /* Use a distinctive bitmap value to tell the parent about execv()
@@ -2758,16 +2758,16 @@ static u8 run_target(char** argv) {
       N_it.tv_nsec = (N_exec_tmout % 1000) * 1000000;
       /* ignore errors & accept possibility that delay can be shorter */
       {
-	u32 N_tries = 3;
-	nanosleep(&N_it, NULL);
-	/* attempt to send up to 3 times (because of target process startup time) */
-	while (N_tries-- &&
-               ((N_fuzz_client?network_listen():network_send()) == -1));
+        u32 N_tries = 3;
+        nanosleep(&N_it, NULL);
+        /* attempt to send up to 3 times (because of target process startup time) */
+        while (N_tries-- &&
+                    ((N_fuzz_client?network_listen():network_send()) == -1));
       }
     } else {
       /* Network output to target process - no delay.  This usual won't work. */
       if ((N_fuzz_client?network_listen():network_send()) == -1) {
-	FATAL("Network: failed to connect or send; specify a network delay time");
+        FATAL("Network: failed to connect or send; specify a network delay time");
       }
     }
   }
@@ -8219,6 +8219,7 @@ int main(int argc, char** argv) {
       } else {
         N_hints.ai_family = AF_INET;
       }
+      printf("Host:%s, Port:%s\n", N_hostspec, N_servicename);
       if (getaddrinfo(N_hostspec, N_servicename, &N_hints, &N_results) != 0) {
         FATAL("-N: getaddrinfo() lookup failed");
       } else {
