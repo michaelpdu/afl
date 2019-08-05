@@ -1,0 +1,55 @@
+dupei@psdz-SYS-4028GR-TR:~/workspace/aflsocks$ afl-fuzz --help
+afl-fuzz 1.95b by <lcamtuf@google.com>
+afl-fuzz: invalid option -- '-'
+
+afl-fuzz [ options ] -- /path/to/fuzzed_app [ ... ]
+
+Required parameters:
+
+  -i dir        - input directory with test cases
+  -o dir        - output directory for fuzzer findings
+
+Execution control settings:
+
+  -f file       - location read by the fuzzed program (stdin)
+  -N URL        - fuzzed program is to read from a network port.
+                  The network is specified by URL = type://path:port
+                  where type= {udp|tcp}, path={::1|127.0.0.1|localhost},
+                  and port is a port number or service name.
+                  There are two cases, where the target program to be
+                  fuzzed is either a server to afl-fuzz (the default)
+                  or a client of afl-fuzz (using the -L option).  If the
+                  target is a server, then afl-fuzz sends fuzzed data
+                  to the address and port specified in the URL.  If
+                  the target is a client, then afl-fuzz listens for
+                  data on the specified port and responds by sending
+                  fuzzed data to the (typically ephemeral) port used
+                  by the target.  Note that the '+' is likely to be
+                  necessary after the -t delay option for network
+                  fuzzing.
+  -D msec       - for network fuzzing only: delay in msec before
+                  a network read/write/connection is attempted;
+                  Note that 3 attempts are made, with this
+                  delay between each (-t is still in effect)
+  -L            - specify this option if the fuzzed program is a
+                  network client (meaning it writes to the network
+                  before reading (a fuzzed input) from the network.
+                  The port is the port number to which the network
+                  client is expected to write.
+  -t msec       - timeout for each run (auto-scaled, 50-1000 ms)
+  -m megs       - memory limit for child process (50 MB)
+  -Q            - use binary-only instrumentation (QEMU mode)
+
+Fuzzing behavior settings:
+
+  -d            - quick & dirty mode (skips deterministic steps)
+  -n            - fuzz without instrumentation (dumb mode)
+  -x dir        - optional fuzzer dictionary (see README)
+
+Other stuff:
+
+  -T text       - text banner to show on the screen
+  -M / -S id    - distributed mode (see parallel_fuzzing.txt)
+  -C            - crash exploration mode (the peruvian rabbit thing)
+
+For additional tips, please consult /usr/local/share/doc/afl/README.

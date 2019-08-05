@@ -2349,6 +2349,8 @@ static void init_forkserver(char** argv) {
 
   if (pipe(st_pipe) || pipe(ctl_pipe)) PFATAL("pipe() failed");
 
+  pid_t pid = getpid();
+  printf("parent id = %d\n", pid);
   forksrv_pid = fork();
   printf("forksrv_pid = %d\n", forksrv_pid);
 
@@ -3027,7 +3029,7 @@ abort_calibration:
 
   if (!first_run) show_stats();
 
-  return fault;
+return fault;
 
 }
 
